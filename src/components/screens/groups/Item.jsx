@@ -44,6 +44,7 @@ const Item = ({ studentInfo, disabled, setChangeInfo }) => {
 		setAddItem(false)
 		}		
 	}
+	
 	useEffect(() => {
 		if (!studentInfo) return
 
