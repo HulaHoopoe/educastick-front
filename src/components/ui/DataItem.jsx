@@ -3,7 +3,7 @@ const DataItem = ({inputs, btns, onClick, onAdd, onUpdate, onDelete}) => {
 		<div className={styles.block_item} onClick={e => showOnClick(e, group.id)}>
 			<form action='' className={styles.item_form}>
 				<div className={styles.btn_block}>
-					<Input placeholder={'Наиманование группы'} value={group.name} disabled={true} />
+					<Input placeholder={'Наимtнование группы'} value={group.name} disabled={true} />
 					<Input placeholder={'Количество человек'} value={group.students_count} disabled={true} />
 				</div>
 				<div className={styles.btn_block}>

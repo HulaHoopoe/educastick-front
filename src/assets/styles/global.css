@@ -9,13 +9,28 @@
 .header{
     background-color: rgb(62, 81, 111);
     padding: 20px;
-    margin-bottom: 20px;
 }
 
 .header-link {
     text-decoration: none;
     color: #fff;
     margin: 10px;
+}
+
+.topbar {
+    padding: 1vw;
+    border-bottom: 2px solid rgb(62, 81, 111);
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar_items{
+    height: 6vh;
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
 }
 
 .btn {

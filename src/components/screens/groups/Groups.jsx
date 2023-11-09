@@ -10,6 +10,7 @@ import BtnImg from '../../ui/BtnImg.jsx'
 import TopBar from '../../ui/TopBar.jsx'
 
 export const AddItemContext = createContext(null)
+export const AddGroupContext = createContext(null)
 
 const Groups = () => {
 	const [groups, setGroups] = useState([])
@@ -17,6 +18,7 @@ const Groups = () => {
 	const [showResults, setShowResults] = useState([])
 	const [changeGroupInfo, setChangeGroupInfo] = useState(null)
 	const [addItem, setAddItem] = useState(false)
+	const [addGroup, setAddGroup] = useState(false)
 
 	const showOnClick = (e, key) => {
 		e.preventDefault
