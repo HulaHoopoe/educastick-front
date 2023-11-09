@@ -1,9 +1,10 @@
 import styles from './Groups.module.css'
 import InputAlt from '../../ui/InputAlt'
 import BtnText from '../../ui/BtnText'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext, createContext } from 'react'
 import { GroupService } from '../../../services/group.services.js'
-import GroupItem from './group-item/GroupItem'
+import {StudentsContext} from './group-item/GroupItem'
+import { AddItemContext } from './Groups'
 
 const clearData = {
 	name: '',
@@ -14,33 +15,57 @@ const clearData = {
 	sex: ''
 }
 
-const Item = ({ student_id, disabled, setChangeInfo }) => {
-	const saveChanges = (e, key) => {
-		setChangeInfo(prev => prev.filter(value => value != key))
-		setStudent(data)
-	}
-
-	const discardChanges = (e, key) => {
-		setChangeInfo(prev => prev.filter(value => value != key))
-		setData(student)
-	}
-
+const Item = ({ studentInfo, disabled, setChangeInfo }) => {
+	const { addItem, setAddItem } = useContext(AddItemContext)
+	const { students, setStudents } = useContext(StudentsContext)
 	const [data, setData] = useState(clearData)
 	const [student, setStudent] = useState(clearData)
 
-	useEffect(() => {
-		if (!student_id) return
-		const fetchData = async () => {
-			const data = await GroupService.getStudent(student_id)
-
+	const saveChanges = (e, key) => {
+		if (key){
+			setChangeInfo(prev => prev.filter(value => value != key))
 			setStudent(data)
-			setData(data)
 		}
+		else {
+			setStudents(prev => [...prev,{
+				id: prev.length + 1, ...data,
+		}])
+		
+		setAddItem(false)
+		}		
+	}
 
-		fetchData()
+	const discardChanges = (e, key) => {		
+		if (key){
+			setChangeInfo(prev => prev.filter(value => value != key))
+			setData(student)
+		}
+		else {
+		setAddItem(false)
+		}		
+	}
+	useEffect(() => {
+		if (!studentInfo) return
+
+		setStudent(studentInfo)
+		setData(studentInfo)
 
 		return setStudent[clearData], setData[clearData]
 	}, [])
+
+	// useEffect(() => {
+	// 	if (!student_id) return
+		// const fetchData = async () => {
+		// 	const data = await GroupService.getStudent(student_id)
+
+		// 	setStudent(data)
+		// 	setData(data)
+		// }
+
+		// fetchData()
+
+	// 	return setStudent[clearData], setData[clearData]
+	// }, [])
 
 	return (
 		<div className={styles.block_extended}>

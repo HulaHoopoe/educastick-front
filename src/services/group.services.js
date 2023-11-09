@@ -34,5 +34,12 @@ export const GroupService = {
         const response = await axios.get(`http://localhost:3000/students?id=${id}`)
         
         return response.data[0]
+    },
+
+    async addStudent(student, group_id) {
+        const studentAdd = await axios.post(`http://localhost:3000/students`, student)
+        const group_studentAdd = await axios.post(`http://localhost:3000/group-student`, {group_id: group_id, student_id: 6})
+        
+        return studentAdd.data
     }
 }
