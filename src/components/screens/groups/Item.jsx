@@ -54,20 +54,6 @@ const Item = ({ studentInfo, disabled, setChangeInfo }) => {
 		return setStudent[clearData], setData[clearData]
 	}, [])
 
-	// useEffect(() => {
-	// 	if (!student_id) return
-		// const fetchData = async () => {
-		// 	const data = await GroupService.getStudent(student_id)
-
-		// 	setStudent(data)
-		// 	setData(data)
-		// }
-
-		// fetchData()
-
-	// 	return setStudent[clearData], setData[clearData]
-	// }, [])
-
 	return (
 		<div className={styles.block_extended}>
 			<div className={styles.item_info}>
