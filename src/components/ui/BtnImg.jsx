@@ -1,20 +1,21 @@
-const BtnDel = props => {
+const BtnImg = ({onClick, disabled, src, alt, imgWidth, imgHeight}) => {
 	const disabledOnClick = (e) => {
+		e.preventDefault()
 		e.stopPropagation()
 	}
 
-	if (!props.disabled)
+	if (!disabled)
 		return (
-			<div className='btn' onClick={props.onClick}>
-				<img src={props.src} alt={props.alt} width={30} height={30} />
-			</div>
+			<button className='btn' onClick={onClick}>
+				<img src={src} alt={alt} width={imgWidth? imgWidth : 30} height={imgHeight? imgHeight : 30} />
+			</button>
 		)
 	else
 		return (
-			<div className='btn_disabled' onClick={e => disabledOnClick(e)}>
-				<img src={props.src} alt={props.alt} width={30} height={30} />
-			</div>
+			<button className='btn_disabled' onClick={e => disabledOnClick(e)}>
+				<img src={src} alt={alt} width={imgWidth? imgWidth : 30} height={imgHeight? imgHeight : 30} />
+			</button>
 		)
 }
 
-export default BtnDel
+export default BtnImg

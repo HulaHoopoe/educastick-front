@@ -6,6 +6,7 @@ const Header = () => {
         <div className='header'>
             <Link className='header-link' to={'/'}>Стартовая</Link>
             <Link className='header-link' to={'/groups'}>Группы</Link>
+            <Link className='header-link' to={'/tests'}>Тесты</Link>
         </div>
     );
 };

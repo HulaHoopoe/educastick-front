@@ -1,17 +1,17 @@
-import Input from './Input'
-import BtnText from './BtnText'
-import BtnImg from './BtnImg'
-import { ItemContext } from '../screens/groups/Groups'
-import { useContext, useState, useCallback, useEffect } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
+import BtnImg from '../../ui/BtnImg'
+import BtnText from '../../ui/BtnText'
+import Input from '../../ui/Input'
 import styles from './DataItem.module.css'
+import { ItemContext } from './Groups'
 
 const clearData = {
 	id: '',
 	name: '',
-	students_count: ''
+	students_count: '',
 }
 
-const DataItem = ({groupInfo, disabled}) => {
+const DataItem = ({ groupInfo, disabled }) => {
 	const { groups, setGroups, showResults, setShowResults, setChangeGroupInfo, setAddGroup, setAddItem } = useContext(ItemContext)
 	const [data, setData] = useState(clearData)
 	const [group, setGroup] = useState(clearData)
@@ -49,7 +49,6 @@ const DataItem = ({groupInfo, disabled}) => {
 		if (key) {
 			setChangeGroupInfo(null)
 			setGroup(data)
-			
 		} else {
 			setGroups(prev => [
 				...prev,
@@ -83,34 +82,28 @@ const DataItem = ({groupInfo, disabled}) => {
 		return setGroup[clearData], setData[clearData]
 	}, [])
 
-
 	return (
 		<div className={styles.block_item} onClick={e => showOnClick(e, group.id)}>
-								<form action='' className={styles.item_form}>
-									<div className={styles.btn_block}>
-										<Input
-											placeholder={'Наименование группы'}
-											value={data.name || ''}
-											disabled={disabled}
-											onChange={e => setData(prev => ({ ...prev, name: e.target.value }))}
-										/>
-										<Input placeholder={'Количество человек'} value={group.students_count || '0'} disabled={true} />
-									</div>
+			<form action='' className={styles.item_form}>
+				<div className={styles.btn_block}>
+					<Input placeholder={'Наименование группы'} value={data.name || ''} disabled={disabled} onChange={e => setData(prev => ({ ...prev, name: e.target.value }))} />
+					<Input placeholder={'Количество человек'} value={group.students_count || '0'} disabled={true} />
+				</div>
 
-									{disabled ? (
-										<div className={styles.btn_block}>
-											<BtnText text='Добавить студента' onClick={e => addStudent(e, group.id)} />
-											<BtnImg src='/edit_white.svg' alt='Изменить' onClick={e => updateItem(e, group.id)} />
-											<BtnImg src='/delete_white.svg' alt='Удалить' onClick={e => deleteItem(e, group.id)} />
-										</div>
-									) : (
-										<div className={styles.btn_block}>
-											<BtnText text='Сохранить' onClick={e => saveChanges(e, group.id)} />
-											<BtnText text='Отменить' onClick={e => discardChanges(e, group.id)} />
-										</div>
-									)}
-								</form>
-							</div>
+				{disabled ? (
+					<div className={styles.btn_block}>
+						<BtnText text='Добавить студента' onClick={e => addStudent(e, group.id)} />
+						<BtnImg src='/edit_white.svg' alt='Изменить' onClick={e => updateItem(e, group.id)} />
+						<BtnImg src='/delete_white.svg' alt='Удалить' onClick={e => deleteItem(e, group.id)} />
+					</div>
+				) : (
+					<div className={styles.btn_block}>
+						<BtnText text='Сохранить' onClick={e => saveChanges(e, group.id)} />
+						<BtnText text='Отменить' onClick={e => discardChanges(e, group.id)} />
+					</div>
+				)}
+			</form>
+		</div>
 	)
 }
 

@@ -1,0 +1,75 @@
+.input {
+    padding: 5px;
+}
+
+.btn {
+    padding: 5px 20px;
+}
+
+.block_container {
+    position: relative;
+    margin: 0 auto 30px;
+}
+
+.inputs_div{
+    display: grid;
+    padding: 30px;
+    padding-top: 0;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1em;
+}
+
+.btns_div{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    height: 40px;
+    padding: 30px;
+    padding-top: 0;
+}
+
+.block_item {
+    position: relative;
+    width: 90%;
+    margin: 0 auto 30px;
+    padding: 10px;
+    border-radius: 15px;
+    border: 2px solid rgb(62, 81, 111);
+}
+
+.block_extended {
+    width: 90%;
+    border: 2px solid rgb(62, 81, 111);
+    border-top: 0;
+    border-radius: 0 0 15px 15px;
+    margin: -45px auto 30px;
+    padding: 45px 10px 0;
+}
+
+.btn_block {
+    display: flex;
+    gap: 10px;
+}
+
+.item_form{
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.sub_item{
+    margin: 20px;
+    margin-top: 0;
+}
+
+.paragraph{
+    margin-bottom: 0.5rem;
+}
+
+.question_block {
+    margin-bottom: 10px;
+}
+
+.questions {
+    margin-left: 20px;
+}
