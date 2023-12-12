@@ -1,5 +1,6 @@
 const BtnText = ({text, onClick, disabled}) => {
  const disabledOnClick = (e) => {
+	e.preventDefault()
 	e.stopPropagation()
  }
 if (!disabled)

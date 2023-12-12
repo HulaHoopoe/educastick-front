@@ -13,7 +13,6 @@ export const ItemContext = createContext(null)
 const Tests = () => {
 	const [tests, setTests] = useState([])
 	const [showResults, setShowResults] = useState([])
-	const [changeInfo, setChangeInfo] = useState(null)
 	const [addItem, setAddItem] = useState(false)
 	const [addGroup, setAddGroup] = useState(false)
 
@@ -61,14 +60,14 @@ const Tests = () => {
 			{tests.length ? (
 				tests.map(test => (
 					<div key={test.id}>
-						<ItemContext.Provider value={{ tests, setTests, showResults, setShowResults, setChangeInfo, setAddGroup, setAddItem }}>
-							<DataItemTests testInfo={test} disabled={changeInfo != test.id} />
+						<ItemContext.Provider value={{ tests, setTests, showResults, setShowResults, setAddGroup, setAddItem }}>
+							<DataItemTests testInfo={test} />
 						</ItemContext.Provider>
 
 						<AddItemContext.Provider value={{ addItem, setAddItem }}>
 							{(Array.isArray(showResults) ? showResults.includes(test.id) : false) ? (
 								<div className={styles.block_extended}>
-									<TestItem itemData={test} disabled={changeInfo != test.id} />
+									<TestItem itemData={test} />
 								</div>
 							) : null}
 						</AddItemContext.Provider>

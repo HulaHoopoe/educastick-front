@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { GroupService } from '../../../../services/group.services.js'
+import { TestService } from '../../../../services/test.services.js'
 import BtnImg from '../../../ui/BtnImg.jsx'
 import BtnText from '../../../ui/BtnText.jsx'
 import Input from '../../../ui/Input.jsx'
@@ -10,14 +10,22 @@ import styles from '../Tests.module.css'
 
 export const StudentsContext = createContext(null)
 
-const TestItem = ({ itemData, disabled }) => {
+const TestItem = ({ itemData }) => {
+	const [disabled, setDisabled] = useState(true)
 	const [data, setData] = useState(itemData)
 	const [tempData, setTempData] = useState(itemData)
+	const [maxQuestionId, setMaxQuestionId] = useState(0)
 	const [showResults, setShowResults] = useState([])
 	const [changeInfo, setChangeInfo] = useState([])
 
 	useEffect(() => {
-		console.log(data)
+		const fetchData = async () => {
+			const data = await TestService.getMaxQuestionId()
+
+			setMaxQuestionId(data)
+		}
+
+		fetchData()
 	}, [data])
 
 	const clearData = useCallback(
@@ -26,6 +34,41 @@ const TestItem = ({ itemData, disabled }) => {
 		},
 		[data]
 	)
+
+	const addQuestion = (e) => {
+		setMaxQuestionId(maxQuestionId + 1)
+
+		const newQuestion = { id: maxQuestionId, description: '', type: 1, answers: []}
+		const newQuestions = ([...tempData.questions, newQuestion])
+		console.log(newQuestions)
+		setTempData(prev => ({...prev, questions: newQuestions}))
+	}
+
+	const saveChanges = (e, key) => {
+		if (key) {
+			setDisabled(true)
+			setData(tempData)
+		} else {
+			setStudents(prev => [
+				...prev,
+				{
+					id: prev.length + 1,
+					...data,
+				},
+			])
+
+			setAddItem(false)
+		}
+	}
+
+	const discardChanges = (e, key) => {
+		if (key) {
+			setDisabled(true)
+			setTempData(data)
+		} else {
+			setAddItem(false)
+		}
+	}
 
 	return (
 		<div>
@@ -58,6 +101,8 @@ const TestItem = ({ itemData, disabled }) => {
 					/>
 					<p className={styles.paragraph}></p>
 					<p className={styles.paragraph}>Вопросы:</p>
+					{!disabled ? <BtnText text='Добавить вопрос' onClick={e => addQuestion(e)} /> : null}
+					<p className={styles.paragraph}></p>
 					<div className={styles.questions}>
 						{tempData.questions.length ? (
 							tempData.questions.map((item, index) => (
@@ -68,29 +113,31 @@ const TestItem = ({ itemData, disabled }) => {
 											placeholder={'Описание вопроса'}
 											value={item.description || ''}
 											disabled={disabled}
-											onChange={e =>
-												{
-													const updatedQuestions = tempData.questions.map((q, i) => {
-														if (i === index) {
-															return {
-																...q,
-																description: e.target.value // Update the description for the specific question
-															};
+											onChange={e => {
+												const updatedQuestions = tempData.questions.map((q, i) => {
+													if (i === index) {
+														return {
+															...q,
+															description: e.target.value, // Update the description for the specific question
 														}
-														return q;
-													});
-											
-													setTempData(prev => ({
-														...prev,
-														questions: updatedQuestions
-													}));
-												}
-											}
+													}
+													return q
+												})
+
+												setTempData(prev => ({
+													...prev,
+													questions: updatedQuestions,
+												}))
+											}}
 										/>
+										{!disabled ? <BtnText text='Удалить вопрос' onClick={e => addQuestion(e)} /> : null}
+										
+										<p className={styles.paragraph}></p>
 									</li>
 									<p className={styles.paragraph}></p>
 
 									<p className={styles.paragraph}> Ответы:</p>
+									{!disabled ? <BtnText text='Добавить ответ' onClick={e => addQuestion(e)} /> : null}
 									<ol type='a' className={styles.questions}>
 										{item.answers.map((answer, answerIndex) => (
 											<li key={answer.id}>
@@ -98,40 +145,41 @@ const TestItem = ({ itemData, disabled }) => {
 													placeholder={'Описание вопроса'}
 													value={answer.description || ''}
 													disabled={disabled}
-													onChange={e =>
-														{
-															const updatedQuestions = tempData.questions.map((q, qIndex) => {
-																if (qIndex === index) {
-																	const updatedAnswers = q.answers.map((a, aIndex) => {
-																		if (aIndex === answerIndex) { // Identify the specific answer index here
-																			return {
-																				...a,
-																				description: e.target.value // Update the description for the specific answer
-																			};
+													onChange={e => {
+														const updatedQuestions = tempData.questions.map((q, qIndex) => {
+															if (qIndex === index) {
+																const updatedAnswers = q.answers.map((a, aIndex) => {
+																	if (aIndex === answerIndex) {
+																		// Identify the specific answer index here
+																		return {
+																			...a,
+																			description: e.target.value, // Update the description for the specific answer
 																		}
-																		return a;
-																	});
-													
-																	return {
-																		...q,
-																		answers: updatedAnswers
-																	};
+																	}
+																	return a
+																})
+
+																return {
+																	...q,
+																	answers: updatedAnswers,
 																}
-																return q;
-															});
-													
-															setTempData(prev => ({
-																...prev,
-																questions: updatedQuestions
-															}));
-														}
-													}
+															}
+															return q
+														})
+
+														setTempData(prev => ({
+															...prev,
+															questions: updatedQuestions,
+														}))
+													}}
 												/>
-												{answer.correct ? (
-													<button className='btn_disabled' style={{ padding: '0 10px' }} disabled>
-														<img src='/checkmark.svg' alt='checkmark' width={20} height={20} />
-													</button>
+												{!disabled ? (
+														<BtnImg src={'/checkmark.svg'} alt={'correct'} imgWidth={20} imgHeight={20} disabled={answer.correct} />
+												) : answer.correct ? (
+													<BtnImg src={'/checkmark.svg'} alt={'correct'} imgWidth={20} imgHeight={20} disabled={true} />
 												) : null}
+												{!disabled ? <BtnText text='Удалить ответ' onClick={e => addQuestion(e)} /> : null}
+												<p className={styles.paragraph}></p>
 											</li>
 										))}
 									</ol>
@@ -149,10 +197,14 @@ const TestItem = ({ itemData, disabled }) => {
 
 			{!disabled ? (
 				<div className={styles.btns_div}>
-					<BtnText text='Сохранить' onClick={e => saveChanges(e, student.id)} />
-					<BtnText text='Отменить' onClick={e => discardChanges(e, student.id)} />
+					<BtnText text='Сохранить' onClick={e => saveChanges(e, tempData.id)} />
+					<BtnText text='Отменить' onClick={e => discardChanges(e, tempData.id)} />
 				</div>
-			) : null}
+			) : (
+				<div className={styles.btns_div}>
+					<BtnImg src='/edit_white.svg' alt='Изменить' onClick={e => setDisabled(false)} />
+				</div>
+			)}
 		</div>
 	)
 }

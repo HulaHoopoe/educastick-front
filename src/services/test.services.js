@@ -13,6 +13,15 @@ export const TestService = {
 			return questions.data.filter((element) => test_question.data.some(e => e.id_question === element.id))
     },
 
+    async getMaxQuestionId(){
+        const questions = await axios.get(`http://localhost:3000/questions`)
+        let maxId = 0
+        questions.data.map(value => value.id > maxId ? maxId = value.id : maxId = maxId)
+
+        return maxId
+        
+    },
+
     async getGroupById(id) {
         const response = await axios.get(`http://localhost:3000/groups?id=${id}`)
 

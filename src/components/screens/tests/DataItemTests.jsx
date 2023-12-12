@@ -11,11 +11,12 @@ const clearData = {
 	theme: '',
 	module: '',
 	type: '',
-	questions: []
+	questions: [],
 }
 
-const DataItemTests = ({testInfo, disabled}) => {
+const DataItemTests = ({ testInfo }) => {
 	const { tests, setTests, showResults, setShowResults, setChangeInfo, setAddTest, setAddItem } = useContext(ItemContext)
+	const [disabled, setDisabled] = useState(true)
 	const [data, setData] = useState(clearData)
 	const [test, setTest] = useState(clearData)
 
@@ -25,18 +26,20 @@ const DataItemTests = ({testInfo, disabled}) => {
 	}
 
 	const deleteItem = (e, id) => {
+		e.preventDefault()
 		setTests(tests.filter(value => value.id != id))
 
 		e.stopPropagation()
 	}
 
-	const updateItem = (e, id) => {
+	const updateItem = (e) => {
 		e.preventDefault()
-		if (disabled) setChangeInfo(id)
+		if (disabled) setDisabled(false)
 		e.stopPropagation()
 	}
 
 	const addStudent = (e, key) => {
+		e.preventDefault()
 		setAddItem(true)
 		if (!showResults.includes(key)) showOnClick(e, key)
 		e.stopPropagation()
@@ -50,10 +53,10 @@ const DataItemTests = ({testInfo, disabled}) => {
 	)
 
 	const saveChanges = (e, key) => {
+		e.preventDefault()
 		if (key) {
-			setChangeTestInfo(null)
+			setDisabled(true)
 			setTest(data)
-			
 		} else {
 			setTests(prev => [
 				...prev,
@@ -69,8 +72,9 @@ const DataItemTests = ({testInfo, disabled}) => {
 	}
 
 	const discardChanges = (e, key) => {
+		e.preventDefault()
 		if (key) {
-			setChangeTestInfo(null)
+			setDisabled(true)
 			setData(test)
 		} else {
 			setAddTest(false)
@@ -87,28 +91,28 @@ const DataItemTests = ({testInfo, disabled}) => {
 		return setTest[clearData], setData[clearData]
 	}, [])
 
-
 	return (
 		<div className={styles.block_item} onClick={e => showOnClick(e, test.id)}>
-								<form action='' className={styles.item_form}>
-									<div className={styles.btn_block}>
-										<Input
-											placeholder={'Название теста'}
-											value={data.name || ''}
-											disabled={disabled}
-											onChange={e => setData(prev => ({ ...prev, name: e.target.value }))}
-										/>
-										<Input placeholder={'Название предмета'} value={data.subject || ''} disabled={disabled} />
-										<Input placeholder={'Тип теста'} value={data.type || ''} disabled={disabled} />
-									</div>
-
-										<div className={styles.btn_block}>
-											<BtnText text='Добавить ответы' disabled={!disabled} onClick={e => addStudent(e, test.id)} />
-											<BtnImg src='/edit_white.svg' alt='Изменить' disabled={!disabled} onClick={e => updateItem(e, test.id)} />
-											<BtnImg src='/delete_white.svg' alt='Удалить' disabled={!disabled} onClick={e => deleteItem(e, test.id)} />
-										</div>
-								</form>
-							</div>
+			<form action='' className={styles.item_form}>
+				<div className={styles.btn_block}>
+					<Input placeholder={'Название теста'} value={data.name || ''} disabled={disabled} onChange={e => setData(prev => ({ ...prev, name: e.target.value }))} />
+					<Input placeholder={'Название предмета'} value={data.subject || ''} disabled={disabled} onChange={e => setData(prev => ({ ...prev, subject: e.target.value }))}/>
+					<Input placeholder={'Тип теста'} value={data.type || ''} disabled={disabled} onChange={e => setData(prev => ({ ...prev, type: e.target.value }))}/>
+				</div>
+				{disabled ? (
+					<div className={styles.btn_block}>
+						<BtnText text='Добавить ответы' disabled={!disabled} onClick={e => addStudent(e, test.id)} />
+						<BtnImg src='/edit_white.svg' alt='Изменить' onClick={e => updateItem(e, test.id)} />
+						<BtnImg src='/delete_white.svg' alt='Удалить' onClick={e => deleteItem(e, test.id)} />
+					</div>
+				) : (
+					<div className={styles.btn_block}>
+						<BtnText text='Сохранить' onClick={e => saveChanges(e, test.id)} />
+						<BtnText text='Отменить' onClick={e => discardChanges(e, test.id)} />
+					</div>
+				)}
+			</form>
+		</div>
 	)
 }
 
