@@ -9,12 +9,15 @@ const TopBar = ({ props }) => {
 	}
 
 	return (
-		<div className='topbar'>
-			<h1>Группы</h1>
-			<div className='topbar_items'>
-				<BtnText text={'Фильтр'} />
-				<BtnText text={'Создать группу'} onClick={onAdd} />
+		<div>
+			<div className='topbar'>
+				<h1>Группы</h1>
+				<div className='topbar_items'>
+					<BtnText text={'Фильтр'} />
+					<BtnText text={'Создать группу'} onClick={onAdd} />
+				</div>
 			</div>
+			<div className='half_line'></div>
 		</div>
 	)
 }
