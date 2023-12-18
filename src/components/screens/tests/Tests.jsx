@@ -31,19 +31,28 @@ const Tests = () => {
 	)
 
 	useEffect(() => {
-		const fetchSubData = async test => {
-			const data = await TestService.getQuestions(test.id)
-
-			setTests(prev => (!prev.some(e => e.id == test.id) ? [...prev, { ...test, questions: data }] : prev))
-			// setTests(prev => ([...prev, !prev.some(e => e.id == test.id) ? {...test, questions: data} : null]))
-		}
-
 		const fetchData = async () => {
-			const data = await TestService.getTests()
-
-			data.map(test => fetchSubData(test))
+			const tests = await TestService.getTests();
+	
+			const testsWithData = await Promise.all(
+				tests.map(async (test) => {
+					const questions = await TestService.getQuestions(test.id);
+	
+					const questionsWithAnswers = await Promise.all(
+						questions.map(async (question) => {
+							const answers = await TestService.getAnswers(question.id);
+							return { ...question, answers };
+						})
+					);
+	
+					return { ...test, questions: questionsWithAnswers };
+				})
+			);
+	
+			setTests(testsWithData);
 		}
 
+		console.log(tests)
 		fetchData()
 
 		return clearTests

@@ -15,18 +15,21 @@ const TestItem = ({ itemData }) => {
 	const [data, setData] = useState(itemData)
 	const [tempData, setTempData] = useState(itemData)
 	const [maxQuestionId, setMaxQuestionId] = useState(0)
+	const [maxAnswerId, setMaxAnswerId] = useState(0)
 	const [showResults, setShowResults] = useState([])
 	const [changeInfo, setChangeInfo] = useState([])
 
 	useEffect(() => {
 		const fetchData = async () => {
 			const data = await TestService.getMaxQuestionId()
+			const data2 = await TestService.getMaxAnswerId()
 
 			setMaxQuestionId(data)
+			setMaxAnswerId(data2)
 		}
 
 		fetchData()
-	}, [data])
+	}, [])
 
 	const clearData = useCallback(
 		() => () => {
@@ -40,6 +43,34 @@ const TestItem = ({ itemData }) => {
 
 		const newQuestion = { id: maxQuestionId, description: '', type: 1, answers: []}
 		const newQuestions = ([...tempData.questions, newQuestion])
+		console.log(newQuestions)
+		setTempData(prev => ({...prev, questions: newQuestions}))
+	}
+
+	const deleteQuestion = (e, id) => {
+
+		const newQuestions = tempData.questions.filter(value => value.id != id)
+		console.log(newQuestions)
+		setTempData(prev => ({...prev, questions: newQuestions}))
+	}
+
+	const addAnswer = (e, id) => {
+		setMaxAnswerId(maxAnswerId + 1)
+
+		const question = tempData.questions.filter(value => value.id === id)[0]
+		const newAnswer = { id: maxAnswerId, description: '', correct: false}
+		const newAnswers = ([...question.answers, newAnswer])
+		console.log(newAnswers)
+		const newQuestion = ({...question, answers: newAnswers})
+		const newQuestions = ([...tempData.questions.filter(value => value.id != id), newQuestion])
+
+		console.log(question)
+		setTempData(prev => ({...prev, questions: newQuestions}))
+	}
+
+	const deleteAnswer = (e, id) => {
+		
+		const newQuestions = tempData.questions.filter(value => value.id != id)
 		console.log(newQuestions)
 		setTempData(prev => ({...prev, questions: newQuestions}))
 	}
@@ -130,14 +161,14 @@ const TestItem = ({ itemData }) => {
 												}))
 											}}
 										/>
-										{!disabled ? <BtnText text='Удалить вопрос' onClick={e => addQuestion(e)} /> : null}
+										{!disabled ? <BtnText text='Удалить вопрос' onClick={e => deleteQuestion(e, item.id)} /> : null}
 										
 										<p className={styles.paragraph}></p>
 									</li>
 									<p className={styles.paragraph}></p>
 
 									<p className={styles.paragraph}> Ответы:</p>
-									{!disabled ? <BtnText text='Добавить ответ' onClick={e => addQuestion(e)} /> : null}
+									{!disabled ? <BtnText text='Добавить ответ' onClick={e => addAnswer(e, item.id)} /> : null}
 									<ol type='a' className={styles.questions}>
 										{item.answers.map((answer, answerIndex) => (
 											<li key={answer.id}>

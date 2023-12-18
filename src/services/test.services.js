@@ -13,6 +13,12 @@ export const TestService = {
 			return questions.data.filter((element) => test_question.data.some(e => e.id_question === element.id))
     },
 
+    async getAnswers(id) {
+        const question_answer = await axios.get(`http://localhost:3000/question-answer?id_question=${id}`)
+        const answers = await axios.get(`http://localhost:3000/answers`)
+        return answers.data.filter((element) => question_answer.data.some(e => e.id_answer === element.id))
+},
+
     async getMaxQuestionId(){
         const questions = await axios.get(`http://localhost:3000/questions`)
         let maxId = 0
@@ -20,6 +26,14 @@ export const TestService = {
 
         return maxId
         
+    },
+
+    async getMaxAnswerId(){
+        const answers = await axios.get(`http://localhost:3000/answers`)
+        let maxId = 0
+        answers.data.map(value => value.id > maxId ? maxId = value.id : maxId = maxId)
+
+        return maxId        
     },
 
     async getGroupById(id) {
