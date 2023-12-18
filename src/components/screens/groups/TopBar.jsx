@@ -1,8 +1,8 @@
 import { useContext } from 'react'
-import BtnText from './BtnText'
-import { AddGroupContext } from '../screens/groups/Groups'
+import BtnText from '../../ui/BtnText'
+import { AddGroupContext } from './Groups'
 
-const TopBar = ({ onClick }) => {
+const TopBar = ({ props }) => {
 	const { AddGroup, setAddGroup } = useContext(AddGroupContext)
 	const onAdd = () => {
 		setAddGroup(true)

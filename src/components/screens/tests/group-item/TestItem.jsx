@@ -44,14 +44,14 @@ const TestItem = ({ itemData }) => {
 		const newQuestion = { id: maxQuestionId, description: '', type: 1, answers: []}
 		const newQuestions = ([...tempData.questions, newQuestion])
 		console.log(newQuestions)
-		setTempData(prev => ({...prev, questions: newQuestions}))
+		setTempData(prev => ({...prev, questions: newQuestions.sort((a, b) => {return a.id - b.id})}))
 	}
 
 	const deleteQuestion = (e, id) => {
 
 		const newQuestions = tempData.questions.filter(value => value.id != id)
 		console.log(newQuestions)
-		setTempData(prev => ({...prev, questions: newQuestions}))
+		setTempData(prev => ({...prev, questions: newQuestions.sort((a, b) => {return a.id - b.id})}))
 	}
 
 	const addAnswer = (e, id) => {
@@ -64,41 +64,39 @@ const TestItem = ({ itemData }) => {
 		const newQuestion = ({...question, answers: newAnswers})
 		const newQuestions = ([...tempData.questions.filter(value => value.id != id), newQuestion])
 
-		console.log(question)
-		setTempData(prev => ({...prev, questions: newQuestions}))
+		setTempData(prev => ({...prev, questions: newQuestions.sort((a, b) => {return a.id - b.id})}))
 	}
 
-	const deleteAnswer = (e, id) => {
-		
-		const newQuestions = tempData.questions.filter(value => value.id != id)
-		console.log(newQuestions)
-		setTempData(prev => ({...prev, questions: newQuestions}))
+	const deleteAnswer = (e, idQuestion, idAnswer) => {
+		const question = tempData.questions.filter(value => value.id === idQuestion)[0]
+		const newAnswers = question.answers.filter(value => value.id != idAnswer)
+		const newQuestion = ({...question, answers: newAnswers})
+		const newQuestions = ([...tempData.questions.filter(value => value.id != idQuestion), newQuestion])
+		setTempData(prev => ({...prev, questions: newQuestions.sort((a, b) => {return a.id - b.id})}))
+	}
+
+	const setCorrect = (e, idQuestion, idAnswer) => {
+		const question = tempData.questions.filter(value => value.id === idQuestion)[0]
+
+		const answer = question.answers.filter(value => value.id == idAnswer)[0]
+		const newAnswer = {...answer, correct: true}
+		const newAnswers = ([...question.answers.map(answer => ({...answer, correct: false})).filter(value => value.id != idAnswer), newAnswer])
+		console.log(newAnswers)
+		const newQuestion = ({...question, answers: newAnswers.sort((a, b) => {return a.id - b.id})})
+		const newQuestions = ([...tempData.questions.filter(value => value.id != idQuestion), newQuestion])
+
+		setTempData(prev => ({...prev, questions: newQuestions.sort((a, b) => {return a.id - b.id})}))
 	}
 
 	const saveChanges = (e, key) => {
-		if (key) {
-			setDisabled(true)
-			setData(tempData)
-		} else {
-			setStudents(prev => [
-				...prev,
-				{
-					id: prev.length + 1,
-					...data,
-				},
-			])
+		setDisabled(true)
+		setData(tempData)
 
-			setAddItem(false)
-		}
 	}
 
 	const discardChanges = (e, key) => {
-		if (key) {
-			setDisabled(true)
-			setTempData(data)
-		} else {
-			setAddItem(false)
-		}
+		setDisabled(true)
+		setTempData(data)
 	}
 
 	return (
@@ -205,11 +203,11 @@ const TestItem = ({ itemData }) => {
 													}}
 												/>
 												{!disabled ? (
-														<BtnImg src={'/checkmark.svg'} alt={'correct'} imgWidth={20} imgHeight={20} disabled={answer.correct} />
+														<BtnImg src={'/checkmark.svg'} alt={'correct'} imgWidth={20} imgHeight={20} disabled={answer.correct} onClick={e => setCorrect(e, item.id, answer.id)}/>
 												) : answer.correct ? (
 													<BtnImg src={'/checkmark.svg'} alt={'correct'} imgWidth={20} imgHeight={20} disabled={true} />
 												) : null}
-												{!disabled ? <BtnText text='Удалить ответ' onClick={e => addQuestion(e)} /> : null}
+												{!disabled ? <BtnText text='Удалить ответ' onClick={e => deleteAnswer(e, item.id, answer.id)} /> : null}
 												<p className={styles.paragraph}></p>
 											</li>
 										))}

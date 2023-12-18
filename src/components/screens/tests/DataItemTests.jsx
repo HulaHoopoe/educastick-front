@@ -15,10 +15,14 @@ const clearData = {
 }
 
 const DataItemTests = ({ testInfo }) => {
-	const { tests, setTests, showResults, setShowResults, setChangeInfo, setAddTest, setAddItem } = useContext(ItemContext)
+	const { tests, setTests, showResults, setShowResults, setAddTest, setAddItem } = useContext(ItemContext)
 	const [disabled, setDisabled] = useState(true)
 	const [data, setData] = useState(clearData)
 	const [test, setTest] = useState(clearData)
+
+	useEffect(() => {
+		!testInfo ? setDisabled(false) : setDisabled(true)
+	}, [])
 
 	const showOnClick = (e, key) => {
 		e.preventDefault
@@ -32,7 +36,7 @@ const DataItemTests = ({ testInfo }) => {
 		e.stopPropagation()
 	}
 
-	const updateItem = (e) => {
+	const updateItem = e => {
 		e.preventDefault()
 		if (disabled) setDisabled(false)
 		e.stopPropagation()
@@ -54,7 +58,7 @@ const DataItemTests = ({ testInfo }) => {
 
 	const saveChanges = (e, key) => {
 		e.preventDefault()
-		if (key) {
+		if (testInfo) {
 			setDisabled(true)
 			setTest(data)
 		} else {
@@ -96,8 +100,8 @@ const DataItemTests = ({ testInfo }) => {
 			<form action='' className={styles.item_form}>
 				<div className={styles.btn_block}>
 					<Input placeholder={'Название теста'} value={data.name || ''} disabled={disabled} onChange={e => setData(prev => ({ ...prev, name: e.target.value }))} />
-					<Input placeholder={'Название предмета'} value={data.subject || ''} disabled={disabled} onChange={e => setData(prev => ({ ...prev, subject: e.target.value }))}/>
-					<Input placeholder={'Тип теста'} value={data.type || ''} disabled={disabled} onChange={e => setData(prev => ({ ...prev, type: e.target.value }))}/>
+					<Input placeholder={'Название предмета'} value={data.subject || ''} disabled={disabled} onChange={e => setData(prev => ({ ...prev, subject: e.target.value }))} />
+					<Input placeholder={'Тип теста'} value={data.type || ''} disabled={disabled} onChange={e => setData(prev => ({ ...prev, type: e.target.value }))} />
 				</div>
 				{disabled ? (
 					<div className={styles.btn_block}>
